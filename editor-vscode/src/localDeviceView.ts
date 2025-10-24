@@ -33,7 +33,20 @@ export class LocalDeviceView {
     // Local Device Item - startService
     disposable = vscode.commands.registerCommand('localDeviceViewItem.startService', async (element: LocalDevice) => {
       try {
-        const pids = await element.startRobotmonService();
+        const pids = await element.startRobotmonService(false);
+        vscode.window.showInformationMessage(`${Message.startServiceSuccess}, ${pids[0]}:${pids[1]}`);
+        element.updateServiceState();
+        this.mLocalDeviceProvider.notifyItemChanged();
+      } catch (e) {
+        vscode.window.showWarningMessage(`${e}`);
+      }
+    });
+    this.mDisposables.push(disposable);
+
+    // Local Device Item - startServiceRoot
+    disposable = vscode.commands.registerCommand('localDeviceViewItem.startServiceRoot', async (element: LocalDevice) => {
+      try {
+        const pids = await element.startRobotmonService(true);
         vscode.window.showInformationMessage(`${Message.startServiceSuccess}, ${pids[0]}:${pids[1]}`);
         element.updateServiceState();
         this.mLocalDeviceProvider.notifyItemChanged();

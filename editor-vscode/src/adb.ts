@@ -3,7 +3,7 @@ import path from 'path';
 import adb from 'adbkit';
 import { Utils } from './utils';
 
-type Client = ReturnType<typeof adb['createClient']>;
+type Client = ReturnType<(typeof adb)['createClient']>;
 
 export interface Process {
   user: string;
@@ -177,7 +177,7 @@ export class ADB {
     throw new Error('AppNotInstalled');
   }
 
-  public async getRobotmonStartCommand(serial: string, args: string[]): Promise<string> {
+  public async getRobotmonStartCommand(serial: string, args: string[], root = false): Promise<string> {
     const nohupPath = await this.getNohubPath(serial);
     const apkPath = await this.getPackagePath(serial, ADB.RobotmonPackage);
     const appProcess = await this.getAppProcess(serial, ADB.RobotmonPackage);
@@ -214,7 +214,8 @@ export class ADB {
     console.log(`[StartCommand][cmdClassPath]: ${cmdClassPath}`);
     console.log(`[StartCommand][cmdLibraryPath]: ${cmdLibraryPath}`);
     const baseCommand = `${cmdLibraryPath} ${cmdClassPath} ${appProcess} /system/bin com.r2studio.robotmon.Main`;
-    const fullCommand = `${nohupPath} sh -c "${baseCommand} ${args.join(' ')}" > /dev/null 2> /dev/null && sleep 2 &`;
+    let sh = root ? 'su' : 'sh';
+    const fullCommand = `${nohupPath} ${sh} -c "${baseCommand} ${args.join(' ')}" > /dev/null 2> /dev/null && sleep 2 &`;
 
     console.log(`[StartCommand][baseCommand]: ${baseCommand}`);
     console.log(`[StartCommand][fullCommand]: ${fullCommand}`);
@@ -297,7 +298,7 @@ export class ADB {
     return [-1, -1];
   }
 
-  public async startRobotmonService(serial: string, args: string[]): Promise<[number, number]> {
+  public async startRobotmonService(serial: string, args: string[], root = false): Promise<[number, number]> {
     let [ppid, pid] = await this.getRobotmonProcessPids(serial);
     if (ppid !== -1 && pid !== -1) {
       // console.log(`[StartService][AlreadyStarted][${serial}] ${ppid}, ${pid}`);
@@ -305,7 +306,7 @@ export class ADB {
     }
     // kill all first
     await this.killAllAppProcesses(serial);
-    const command = await this.getRobotmonStartCommand(serial, args);
+    const command = await this.getRobotmonStartCommand(serial, args, root);
     try {
       // await this.shellNoResult(serial, command);
       this.shell(serial, command);

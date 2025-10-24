@@ -26,8 +26,8 @@ export class LocalDevice extends vscode.TreeItem {
     }
   }
 
-  public async startRobotmonService(): Promise<[number, number]> {
-    return await this.mAdb.startRobotmonService(this.id, []);
+  public async startRobotmonService(root: boolean): Promise<[number, number]> {
+    return await this.mAdb.startRobotmonService(this.id, [], root);
   }
 
   public async stopRobotmonService(): Promise<void> {

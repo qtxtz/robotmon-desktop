@@ -48,6 +48,14 @@
         }
       },
       {
+        "command": "localDeviceViewItem.startServiceRoot",
+        "title": "start service as root",
+        "icon": {
+          "light": "res/light_play.svg",
+          "dark": "res/dark_play.svg"
+        }
+      },
+      {
         "command": "localDeviceViewItem.stopService",
         "title": "stop service",
         "icon": {
@@ -266,6 +274,11 @@
       "view/item/context": [
         {
           "command": "localDeviceViewItem.startService",
+          "when": "view == localDeviceView",
+          "group": "inline"
+        },
+        {
+          "command": "localDeviceViewItem.startServiceRoot",
           "when": "view == localDeviceView",
           "group": "inline"
         },

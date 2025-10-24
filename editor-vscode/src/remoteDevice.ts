@@ -310,8 +310,8 @@ export class RemoteDevice extends vscode.TreeItem {
   private updateDescription() {
     if (this.mIsConnected) {
       this.iconPath = {
-        light: path.join(__filename, '..', '..', 'res', 'light_connect.svg'),
-        dark: path.join(__filename, '..', '..', 'res', 'dark_connect.svg')
+        light: path.join(__filename, '..', '..', 'res', 'light_connect.svg') as any,
+        dark: path.join(__filename, '..', '..', 'res', 'dark_connect.svg') as any
       };
       this.description = `${this.width}x${this.height}`;
     } else {
