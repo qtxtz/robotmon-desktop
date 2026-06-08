@@ -220,6 +220,17 @@ export class RemoteDevice extends vscode.TreeItem {
     });
   }
 
+  // Workaround: no Keycode gRPC yet. Device already supports key injection via
+  // driver.KeyCode (Java Main2.keyCode → injectInputEvent). To migrate to native gRPC:
+  // 1. service-v2/rpc/grpc.proto — add RequestKeycode { label, during } and rpc Keycode
+  // 2. service-v2/core/api.go — add KeyCode(label string) calling r.driver.KeyCode(label)
+  // 3. service-v2/rpc/grpc_impl.go — implement GRPCServer.Keycode
+  // 4. Rebuild Android service (gomobile) and sync proto to editor-vscode + simple-manager
+  // 5. Run editor-vscode/src/grpc/gen.sh, then replace runScriptAsync below with grpc.invoke(Keycode)
+  public pressBack(during: number = 10) {
+    return this.runScriptAsync(`keycode('BACK', ${during});`);
+  }
+
   public tapUp(x: number, y: number, id: number = 0) {
     return new Promise<void>((resolve, reject) => {
       const request = new pb.RequestTap();

@@ -49,6 +49,7 @@ service GrpcService {
   rpc TapDown(RequestTap) returns (Response) {}
   rpc MoveTo(RequestTap) returns (Response) {}
   rpc TapUp(RequestTap) returns (Response) {}
+  // Future: rpc Keycode(RequestKeycode) returns (Response) {} for pressBack without RunScriptAsync
   rpc Pause(Empty) returns (Response) {}
   rpc Resume(Empty) returns (Response) {}
   rpc Reset(Empty) returns (Response) {}
