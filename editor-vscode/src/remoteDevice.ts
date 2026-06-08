@@ -220,6 +220,10 @@ export class RemoteDevice extends vscode.TreeItem {
     });
   }
 
+  public pressBack(during: number = 10) {
+    return this.runScriptAsync(`keycode('BACK', ${during});`);
+  }
+
   public tapUp(x: number, y: number, id: number = 0) {
     return new Promise<void>((resolve, reject) => {
       const request = new pb.RequestTap();

@@ -112,7 +112,7 @@
       </div>
       <!-- <div style="height: 40px;"></div> -->
       <div id="preview" style="padding-top: 76px;">
-        <div id="screenImageContainer">
+        <div id="screenImageContainer" data-vscode-context='{"preventDefaultContextMenuItems": true}'>
           <img id="screenImage" draggable="false"/>
           <div id="positionCol"></div>
           <div id="positionRow"></div>
@@ -167,6 +167,13 @@
           mouseMode = $(this).val();
         });
         // preview
+        $("#screenImageContainer").on('contextmenu', (e) => {
+          e.preventDefault();
+          if (mouseMode == 'controlMode') {
+            vscode.postMessage({command: 'back'});
+          }
+          return false;
+        });
         $("#screenImageContainer").mousemove((e) => {
           const x = Math.floor(e.offsetX / imageWidth * deviceWidth);
           const y = Math.floor(e.offsetY / imageHeight * deviceHeight);
@@ -183,6 +190,9 @@
           }
         });
         $("#screenImageContainer").mousedown((e) => {
+          if (mouseMode == 'controlMode' && e.button === 2) {
+            return;
+          }
           isMouseDown = true;
           if (mouseMode == 'colorMode') {
             vscode.postMessage({command: 'printInfo', x: +posX, y: +posY});
@@ -199,6 +209,9 @@
           }
         });
         $("#screenImageContainer").mouseup((e) => {
+          if (mouseMode == 'controlMode' && e.button === 2) {
+            return;
+          }
           isMouseDown = false;
           if (mouseMode == 'colorMode') {
             // DO NOTHING

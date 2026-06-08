@@ -81,6 +81,9 @@ export class ScreenUtilsPanel {
       case 'tapUp':
         this.mDevice.tapUp(message.x, message.y);
         break;
+      case 'back':
+        this.mDevice.pressBack();
+        break;
       case 'printInfo':
         const x = message.x;
         const y = message.y;
